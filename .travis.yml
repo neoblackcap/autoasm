@@ -1,13 +1,22 @@
 sudo: false
 language: python
 python:
-  - 3.6
+- 3.6
 install:
-  - pip install coveralls
+- pip install coveralls
 script:
-  - python setup.py test
+- python setup.py test
 notifications:
   email:
-    - neo.blackcap@gmail.com
+  - neo.blackcap@gmail.com
 after_success:
-  - coveralls
+- coveralls
+deploy:
+  provider: pypi
+  user: neo_blackcap
+  distributions: "sdist bdist_wheel"
+  password:
+    secure: fohmZ0ohCBGGNc/gYw2n0FOc3kNl7iJWW0kJ3BeSrEKDfkfCcAfEZUHEYriSqScTFNNgK3ZxNdaN51OuUWK4K118lqNSm1IhqhFsQZrPUDoer1HSheTL7alcvyyRLZjc/GgcwJvq9nx0vM5EKTicyLIJUYpIRvmSHQHS/wKKz+dcbkg/CEAucQwr8AJY2zOz97KHI5DyebBmoJmNchHd3JM6n1Q3ZX0HnPm4gtO1BV+uE77vsynkqXkMI1ZW0EaRaO9B2z1exR8ozR33w2WVpCIxO7vm+9uBOcma6xbMdXyM/nOeLW7BpEAWiFzpWZLK+VUDUpO/wVGR6stlQ0AqYQaxSPU67TapTL1X/W8dZnXnTk3qcvwvKcoRdGIW1FKGDCjnjO3aoOXd7zCwQg7joSHIjRgutk936jVCsRc1jqDbUlxSdTCE5T/IXTKvA+VDwMc/2tD85RQVqhassCCX8zke6JRdzIDulKL6xplJoq8OtkIouKlGPIKOu9wzpgfDIbQVw0xfgrU6+seX4v4FI79MSajQc0vtcunziyguGqxSOwryLs5/x4pp5dhae+aqrFU6glzWGvQcZBF6ymWhl3ilBawSqznO00cTMlmFE95i2vJgB5uj6/Q3d7pCD0VD6kotodQTwEsof6qV0eWK/M8g7xPa1zxJ/BcwZzwrppU=
+  on:
+    tags: true
+
