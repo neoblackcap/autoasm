@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = conveyor
+source = autoasm
 omit = tests/*
 
 [report]
