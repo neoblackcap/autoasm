@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import importlib
 
-from conveyor import execptions
+from . import execptions
 
 
 class Config:
