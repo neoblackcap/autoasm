@@ -7,3 +7,5 @@ script:
 notifications:
   email:
     - neo.blackcap@gmail.com
+after_success:
+  - coveralls
