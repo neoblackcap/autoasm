@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import conveyor
+import autoasm
 
-ctx = conveyor.Context('testing')
+ctx = autoasm.Context('testing')
 
 
 @ctx.service('movie_finder')

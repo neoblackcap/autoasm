@@ -2,4 +2,4 @@
 
 from .core import Context
 
-__VERSION__ = '0.1.3'
+__VERSION__ = '0.1.4'
