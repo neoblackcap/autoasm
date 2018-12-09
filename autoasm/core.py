@@ -2,7 +2,7 @@
 import functools
 import threading
 
-from conveyor import execptions
+from . import execptions
 
 
 class Context:
