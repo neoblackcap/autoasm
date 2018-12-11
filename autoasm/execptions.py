@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 
 
-class ConveyorError(Exception):
+class AutoasmError(Exception):
     pass
 
 
-class ServiceNotFound(ConveyorError):
+class ServiceNotFound(AutoasmError):
     pass
 
 
-class ServiceDuplicated(ConveyorError):
+class ServiceDuplicated(AutoasmError):
     pass
 
 
-class NoConfig(ConveyorError):
+class NoConfig(AutoasmError):
+    pass
+
+
+class WorkspaceNotBinding(AutoasmError):
     pass

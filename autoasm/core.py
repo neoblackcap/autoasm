@@ -28,13 +28,13 @@ class Context:
     def inject(self, *keys):
 
         def wrapper(func):
-
             @functools.wraps(func)
             def wrap(*args, **kwargs):
                 instances = {key: self._resolve(key) for key in keys}
                 injection = set(keys) - set(kwargs.keys())
                 kwargs.update({key: instances[key] for key in injection})
                 return func(*args, **kwargs)
+
             return wrap
 
         return wrapper
@@ -43,6 +43,7 @@ class Context:
         if not self._entities.get(key):
             with self._lock:
                 return self._resolve_unsafe(key)
+        return self._entities.get(key)
 
     def _resolve_unsafe(self, key):
         try:
@@ -71,3 +72,29 @@ class Context:
         msg = f'{key} is registered and type is {entity_type}, ' \
             f'but get new registration with {type(cls)}'
         raise execptions.ServiceNotFound(msg)
+
+    def workspace(self, ws: 'Workspace'):
+        self._dependencies.update(ws._dependencies)
+        ws.bind(self)
+
+
+class Workspace(Context):
+
+    def __init__(self, name):
+        super().__init__(name)
+        self._context: Context = None
+
+    def bind(self, ctx: Context):
+        self._context = ctx
+
+    def inject(self, *keys):
+        def _inject(func):
+            @functools.wraps(func)
+            def wrapper(*args, **kwargs):
+                if self._context:
+                    return self._context.inject(*keys)(func)(*args, **kwargs)
+                raise execptions.WorkspaceNotBinding()
+
+            return wrapper
+
+        return _inject
