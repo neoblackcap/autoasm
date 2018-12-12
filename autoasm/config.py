@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 import importlib
+import typing
 
 from . import execptions
 
 
 class Config:
-    pass
+
+    def to_dict(self) -> typing.Mapping:
+        raise NotImplementedError()
 
 
-class PythonConfig(Config):
+class PythonFileConfig(Config):
 
     def __init__(self, path):
         self._mod = importlib.import_module(path)
@@ -20,3 +23,16 @@ class PythonConfig(Config):
             return getattr(mod, key)
         except AttributeError:
             raise execptions.NoConfig(key)
+
+    def to_dict(self):
+        attrs = [attr for attr in dir(self._mod) if not attr.startswith('_')]
+        r = {attr: getattr(attr, self._mod) for attr in attrs}
+        return r
+
+
+class JsonConfig(Config):
+    pass
+
+
+class ObjectConfig(Config):
+    pass
