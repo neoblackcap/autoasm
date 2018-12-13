@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 import importlib
-import typing
 
 from . import execptions
 
 
 class Config:
 
-    def to_dict(self) -> typing.Mapping:
+    def to_dict(self):
+        """
+
+        :rtype: typing.Mapping
+        """
         raise NotImplementedError()
 
 
@@ -36,3 +39,5 @@ class JsonConfig(Config):
 
 class ObjectConfig(Config):
     pass
+
+

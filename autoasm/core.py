@@ -32,8 +32,13 @@ class Context:
     autoasm core class, create a context to get dependency
     """
 
-    def __init__(self, name, ctx_type: ContextType = ContextType.SYNC,
-                 loop=None):
+    def __init__(self, name, ctx_type=ContextType.SYNC, loop=None):
+        """
+
+        :param str name:
+        :param ContextType ctx_type:
+        :param loop:
+        """
         self._name = name
         self._config = {}
         self._lock = threading.RLock()
@@ -54,7 +59,12 @@ class Context:
     def configure_from_module(self, name):
         pass
 
-    def configure(self, cfg: config.Config):
+    def configure(self, cfg):
+        """
+
+        :param config.Config cfg:
+        :return:
+        """
         self._config.update(cfg.to_dict())
 
     def service(self, key):
@@ -138,8 +148,14 @@ class Context:
         _msg = msg.format(key=key)
         raise execptions.ServiceNotFound(msg)
 
-    def _register(self, runnable, key,
-                  service_type: ServiceType = ServiceType.SYNC):
+    def _register(self, runnable, key, service_type=ServiceType.SYNC):
+        """
+
+        :param typing. runnable:
+        :param key:
+        :param ServiceType service_type:
+        :return:
+        """
         with self._lock:
             if service_type == ServiceType.SYNC:
                 if not self._dependencies.get(key):
@@ -161,7 +177,12 @@ class Context:
 
             raise execptions.ServiceDuplicated(msg)
 
-    def workspace(self, ws: 'Workspace'):
+    def workspace(self, ws):
+        """
+
+        :param Workspace ws:
+        :return:
+        """
         self._dependencies.update(ws._dependencies)
         ws.bind(self)
 
@@ -170,9 +191,15 @@ class Workspace(Context):
 
     def __init__(self, name):
         super().__init__(name)
-        self._context: Context = None
+        # type: Context
+        self._context = None
 
-    def bind(self, ctx: Context):
+    def bind(self, ctx):
+        """
+
+        :param Context ctx:
+        :return:
+        """
         self._context = ctx
 
     def inject(self, *keys):

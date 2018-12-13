@@ -12,21 +12,15 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
-import sys
-sys.path.insert(0, os.path.abspath('..'))
-
-import autoasm
-
+# import os
+# import sys
+# sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
 project = 'Autoasm'
 copyright = '2018, Neo Ko'
 author = 'Neo Ko'
-
-version = autoasm.__VERSION__
-release = autoasm.__VERSION__
 
 # -- General configuration ---------------------------------------------------
 
