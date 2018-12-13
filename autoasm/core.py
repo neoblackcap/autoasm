@@ -51,6 +51,9 @@ class Context:
     def __str__(self):
         return self._name
 
+    def configure_from_module(self, name):
+        pass
+
     def configure(self, cfg: config.Config):
         self._config.update(cfg.to_dict())
 
