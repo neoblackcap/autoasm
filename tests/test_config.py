@@ -2,7 +2,12 @@
 import autoasm
 
 ctx = autoasm.Context('testing')
-ctx.configure_from_module()
+ctx.configure_from_module('autoasm')
+
+
+@ctx.service('db_name')
+def dummy_db():
+    return 'testing'
 
 
 @ctx.inject('db_name')

@@ -107,7 +107,8 @@ class Context:
     def _resolve_unsafe(self, key):
         dependency = self._dependencies.get(key)
         if not dependency:
-            msg = f"can't find dependency with key {key}"
+            _msg = "can't find dependency with key {key}"
+            msg = _msg.format(key=key)
             raise execptions.ServiceNotFound(msg)
 
         entity = dependency()
@@ -133,7 +134,8 @@ class Context:
             self._entities[key] = entity
             return self._entities[key]
 
-        msg = f"can't find dependency with key {key}"
+        msg = "can't find dependency with key {key}"
+        _msg = msg.format(key=key)
         raise execptions.ServiceNotFound(msg)
 
     def _register(self, runnable, key,
@@ -151,8 +153,12 @@ class Context:
                 raise TypeError('unknown service_type')
 
             entity_type = type(self._dependencies.get('key'))
-            msg = f'{key} is registered and type is {entity_type}, ' \
-                f'but get new registration with {type(runnable)}'
+            _msg = '{key} is registered and type is {entity_type}, ' \
+                   'but get new registration with {t}'
+            msg = _msg.format(key=key,
+                              entity_type=entity_type,
+                              t=type(runnable))
+
             raise execptions.ServiceDuplicated(msg)
 
     def workspace(self, ws: 'Workspace'):
