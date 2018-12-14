@@ -56,8 +56,17 @@ class Context:
     def __str__(self):
         return self._name
 
+    @property
+    def config(self):
+        return self._config
+
     def configure_from_module(self, name):
-        pass
+        cfg = config.ModuleConfig(name)
+        self.configure(cfg)
+
+    def configure_from_json(self, name):
+        cfg = config.JsonConfig(name)
+        self.configure(cfg)
 
     def configure(self, cfg):
         """
@@ -65,6 +74,7 @@ class Context:
         :param config.Config cfg:
         :return:
         """
+
         self._config.update(cfg.to_dict())
 
     def service(self, key):
@@ -110,7 +120,9 @@ class Context:
 
     def _resolve(self, key):
         with self._lock:
-            if not self._entities.get(key):
+            if self._config.get(key):
+                return self._config.get(key)
+            elif not self._entities.get(key):
                 return self._resolve_unsafe(key)
             return self._entities.get(key)
 
@@ -127,7 +139,9 @@ class Context:
 
     async def _async_resolve(self, key):
         async with self._alock:
-            if not self._entities.get(key):
+            if self._config.get(key):
+                return self._config.get(key)
+            elif not self._entities.get(key):
                 return await self._async_resolve_unsafe(key)
             return self._entities.get(key)
 

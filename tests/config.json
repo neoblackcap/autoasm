@@ -1,0 +1,9 @@
+{
+  "values": [
+    {
+      "name": "username",
+      "value": "tester",
+      "type": "str"
+    }
+  ]
+}

@@ -19,3 +19,7 @@ class NoConfig(AutoasmError):
 
 class WorkspaceNotBinding(AutoasmError):
     pass
+
+
+class ConfigError(AutoasmError):
+    pass
