@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import ast
+import enum
 import importlib
 import json
 import pathlib
@@ -17,14 +17,25 @@ class Config:
         raise NotImplementedError()
 
 
+class CoerceType(enum.Enum):
+    SAME = 1
+    LOWERCASE = 2
+
+
 class ModuleConfig(Config):
 
-    def __init__(self, path):
+    def __init__(self, path, coerce_type=CoerceType.SAME):
         self._mod = importlib.import_module(path)
+        self._coerce_type = coerce_type
 
     def to_dict(self):
         attrs = [attr for attr in dir(self._mod) if not attr.startswith('_')]
-        r = {attr: getattr(self._mod, attr) for attr in attrs}
+
+        if self._coerce_type == CoerceType.LOWERCASE:
+            r = {attr.lower(): getattr(self._mod, attr) for attr in attrs}
+        else:
+            # do as same as CoerceType.SAME
+            r = {attr: getattr(self._mod, attr) for attr in attrs}
         return r
 
 
@@ -84,7 +95,3 @@ class JsonConfig(Config):
             raise TypeError('value {} is not dict'.format(value))
         else:
             raise TypeError('unknown type')
-
-
-
-

@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
+import pathlib
+
 import autoasm
+
+cfg_path = pathlib.Path(__file__).parent / 'config.json'
 
 ctx = autoasm.Context('testing')
 ctx.configure_from_module('tests.config')
-ctx.configure_from_json('config.json')
+ctx.configure_from_json(cfg_path.absolute())
+
 
 @ctx.service('db_name')
 @ctx.inject('db')
@@ -32,5 +37,4 @@ def test_module_config():
 
 
 def test_json_config():
-    print(ctx.config)
     assert get_dummy_name() == 'tester'

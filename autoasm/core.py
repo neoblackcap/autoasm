@@ -13,8 +13,8 @@ import enum
 import functools
 import threading
 
-from . import execptions
 from . import config
+from . import execptions
 
 
 class ContextType(enum.Enum):
@@ -25,6 +25,16 @@ class ContextType(enum.Enum):
 class ServiceType(enum.Enum):
     ASYNC = 1
     SYNC = 2
+
+
+CoerceType = config.CoerceType
+
+
+class Empty:
+    pass
+
+
+_EMPTY = Empty()
 
 
 class Context:
@@ -60,12 +70,12 @@ class Context:
     def config(self):
         return self._config
 
-    def configure_from_module(self, name):
-        cfg = config.ModuleConfig(name)
+    def configure_from_module(self, name, coerce_type=CoerceType.SAME):
+        cfg = config.ModuleConfig(name, coerce_type)
         self.configure(cfg)
 
-    def configure_from_json(self, name):
-        cfg = config.JsonConfig(name)
+    def configure_from_json(self, path):
+        cfg = config.JsonConfig(path)
         self.configure(cfg)
 
     def configure(self, cfg):
@@ -120,9 +130,9 @@ class Context:
 
     def _resolve(self, key):
         with self._lock:
-            if self._config.get(key):
+            if not _is_empty(self._config, key):
                 return self._config.get(key)
-            elif not self._entities.get(key):
+            elif _is_empty(self._entities, key):
                 return self._resolve_unsafe(key)
             return self._entities.get(key)
 
@@ -139,9 +149,9 @@ class Context:
 
     async def _async_resolve(self, key):
         async with self._alock:
-            if self._config.get(key):
+            if not _is_empty(self._config, key):
                 return self._config.get(key)
-            elif not self._entities.get(key):
+            elif _is_empty(self._entities, key):
                 return await self._async_resolve_unsafe(key)
             return self._entities.get(key)
 
@@ -158,8 +168,8 @@ class Context:
             self._entities[key] = entity
             return self._entities[key]
 
-        msg = "can't find dependency with key {key}"
-        _msg = msg.format(key=key)
+        _msg = "can't find dependency with key {key}"
+        msg = _msg.format(key=key)
         raise execptions.ServiceNotFound(msg)
 
     def _register(self, runnable, key, service_type=ServiceType.SYNC):
@@ -172,11 +182,11 @@ class Context:
         """
         with self._lock:
             if service_type == ServiceType.SYNC:
-                if not self._dependencies.get(key):
+                if _is_empty(self._dependencies, key):
                     self._dependencies[key] = runnable
                     return
             elif service_type == ServiceType.ASYNC:
-                if not self._async_dependencies.get(key):
+                if _is_empty(self._async_dependencies, key):
                     self._async_dependencies[key] = runnable
                     return
             else:
@@ -198,6 +208,7 @@ class Context:
         :return:
         """
         self._dependencies.update(ws._dependencies)
+        self._async_dependencies.update(ws._async_dependencies)
         ws.bind(self)
 
 
@@ -227,3 +238,13 @@ class Workspace(Context):
             return wrapper
 
         return _inject
+
+
+def _is_empty(container, key):
+    """
+
+    :param typing.Mapping container:
+    :param str key:
+    :return:
+    """
+    return isinstance(container.get(key, _EMPTY), Empty)
